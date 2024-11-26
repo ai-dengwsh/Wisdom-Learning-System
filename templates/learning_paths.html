@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习路径 - 智能学习系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-text {
+            background: linear-gradient(120deg, #4F46E5, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(120deg, #4F46E5, #7C3AED);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .path-card {
+            transition: all 0.3s ease;
+        }
+        .path-card:hover {
+            transform: translateY(-5px);
+        }
+        .path-line {
+            position: absolute;
+            left: 2.25rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #4F46E5 0%, #7C3AED 100%);
+        }
+        .milestone {
+            position: relative;
+            z-index: 1;
+        }
+        .milestone::before {
+            content: '';
+            position: absolute;
+            left: -2.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: linear-gradient(120deg, #4F46E5, #7C3AED);
+            box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="glass-card fixed w-full z-50 top-0 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="{{ url_for('index') }}" class="flex items-center space-x-2">
+                    <i class="fas fa-brain text-3xl gradient-text"></i>
+                    <span class="text-2xl font-bold gradient-text">智能学习系统</span>
+                </a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <span class="text-gray-600">
+                    <i class="fas fa-user-circle mr-2"></i>{{ current_user.username }}
+                </span>
+                <a href="{{ url_for('logout') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">
+                    <i class="fas fa-sign-out-alt mr-1"></i>退出
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="max-w-7xl mx-auto pt-24 px-6 pb-12">
+        <!-- 页面标题 -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold gradient-text">学习路径</h1>
+            <button onclick="showCreatePathModal()" 
+                    class="gradient-bg text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all transform hover:-translate-y-1">
+                <i class="fas fa-plus mr-2"></i>创建新路径
+            </button>
+        </div>
+
+        <!-- 学习路径列表 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for path in paths %}
+            <div class="glass-card rounded-2xl p-6 path-card">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ path.name }}</h3>
+                        <p class="text-gray-600 text-sm">{{ path.description }}</p>
+                    </div>
+                    <span class="px-3 py-1 text-sm bg-indigo-100 text-indigo-800 rounded-full">
+                        {{ "%.0f"|format(path.completion_rate * 100) }}%
+                    </span>
+                </div>
+                
+                <!-- 进度条 -->
+                <div class="w-full bg-gray-100 rounded-full h-2 mb-4">
+                    <div class="gradient-bg h-2 rounded-full transition-all duration-500"
+                         style="width: {{ path.completion_rate * 100 }}%"></div>
+                </div>
+                
+                <!-- 主题标签 -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                    {% for topic in path.topic_sequence %}
+                    <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-md">{{ topic }}</span>
+                    {% endfor %}
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="flex justify-between items-center">
+                    <button onclick="viewPathDetails({{ path.id }})" 
+                            class="text-indigo-600 hover:text-indigo-800 text-sm">
+                        <i class="fas fa-eye mr-1"></i>查看详情
+                    </button>
+                    <button onclick="startLearning({{ path.id }})" 
+                            class="gradient-bg text-white px-4 py-2 rounded-lg text-sm hover:shadow-md transition-all">
+                        继续学习
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 创建路径模态框 -->
+        <div id="createPathModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="min-h-screen flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl p-8 max-w-lg w-full">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold gradient-text">创建学习路径</h2>
+                        <button onclick="hideCreatePathModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="createPathForm" onsubmit="createPath(event)">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">路径名称</label>
+                                <input type="text" name="name" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">描述</label>
+                                <textarea name="description" rows="3" required
+                                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">主题（用逗号分隔）</label>
+                                <input type="text" name="topics" required
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                       placeholder="例如：python,算法,数据结构">
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-end space-x-4">
+                            <button type="button" onclick="hideCreatePathModal()"
+                                    class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                                取消
+                            </button>
+                            <button type="submit"
+                                    class="gradient-bg text-white px-4 py-2 rounded-lg hover:shadow-md transition-all">
+                                创建
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showCreatePathModal() {
+            document.getElementById('createPathModal').classList.remove('hidden');
+        }
+        
+        function hideCreatePathModal() {
+            document.getElementById('createPathModal').classList.add('hidden');
+        }
+        
+        function createPath(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            fetch('/learning-paths', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.get('name'),
+                    description: formData.get('description'),
+                    topics: formData.get('topics').split(',').map(t => t.trim())
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === '创建成功') {
+                    hideCreatePathModal();
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                alert('创建失败，请重试');
+            });
+        }
+        
+        function viewPathDetails(pathId) {
+            // 实现查看详情功能
+            window.location.href = `/learning-paths/${pathId}`;
+        }
+        
+        function startLearning(pathId) {
+            // 实现开始学习功能
+            window.location.href = `/learning-paths/${pathId}/learn`;
+        }
+    </script>
+</body>
+</html> 

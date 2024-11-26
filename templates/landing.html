@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能学习系统 - 让学习更智能</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-text {
+            background: linear-gradient(120deg, #4F46E5, #7C3AED);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(120deg, #4F46E5, #7C3AED);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .hero-image {
+            background: url('/static/images/ai_learning.jpg') no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+        }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%234F46E5" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,224C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
+    <!-- 导航栏 -->
+    <nav class="glass-card fixed w-full z-50 top-0 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-brain text-3xl gradient-text"></i>
+                <span class="text-2xl font-bold gradient-text">智能学习系统</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">登录</a>
+                <a href="{{ url_for('register') }}" class="gradient-bg text-white px-6 py-2 rounded-full hover:shadow-lg transition-all transform hover:-translate-y-1">
+                    立即注册
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- 英雄区域 -->
+            <div class="flex flex-col lg:flex-row items-center justify-between mb-20">
+                <div class="lg:w-1/2 mb-10 lg:mb-0">
+                    <h1 class="text-5xl lg:text-6xl font-bold mb-6">
+                        <span class="gradient-text">智能学习</span><br>
+                        让知识触手可及
+                    </h1>
+                    <p class="text-gray-600 text-xl mb-8">
+                        基于人工智能的自适应学习平台，为每个学习者提供个性化的学习体验。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="{{ url_for('register') }}" class="gradient-bg text-white px-8 py-3 rounded-full text-lg font-semibold hover:shadow-xl transition-all transform hover:-translate-y-1">
+                            开始学习
+                        </a>
+                        <a href="#features" class="bg-white text-indigo-600 px-8 py-3 rounded-full text-lg font-semibold hover:shadow-xl transition-all transform hover:-translate-y-1 border border-indigo-200">
+                            了解更多
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 floating">
+                    <img src="/static/images/ai_learning.jpg" 
+                         alt="智能学习插图" 
+                         class="w-full max-w-lg mx-auto rounded-2xl shadow-2xl">
+                </div>
+            </div>
+
+            <!-- 特性区域 -->
+            <section id="features" class="py-20">
+                <h2 class="text-4xl font-bold text-center mb-16">
+                    <span class="gradient-text">为什么选择我们</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 特性卡片 1 -->
+                    <div class="glass-card rounded-2xl p-8 hover:shadow-xl transition-all transform hover:-translate-y-2">
+                        <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-brain text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">智能推荐</h3>
+                        <p class="text-gray-600">基于AI算法的个性化题目推荐，让学习更有针对性。</p>
+                    </div>
+                    <!-- 特性卡片 2 -->
+                    <div class="glass-card rounded-2xl p-8 hover:shadow-xl transition-all transform hover:-translate-y-2">
+                        <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-chart-line text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">进度追踪</h3>
+                        <p class="text-gray-600">实时监控学习进度，科学分析学习效果。</p>
+                    </div>
+                    <!-- 特性卡片 3 -->
+                    <div class="glass-card rounded-2xl p-8 hover:shadow-xl transition-all transform hover:-translate-y-2">
+                        <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-road text-2xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">学习路径</h3>
+                        <p class="text-gray-600">定制个性化学习计划，循序渐进提升能力。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 统计数据 -->
+            <section class="py-20">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold gradient-text mb-2">10000+</div>
+                        <div class="text-gray-600">题目数量</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold gradient-text mb-2">98%</div>
+                        <div class="text-gray-600">用户好评</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold gradient-text mb-2">50+</div>
+                        <div class="text-gray-600">知识点</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold gradient-text mb-2">24/7</div>
+                        <div class="text-gray-600">智能服务</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="relative">
+        <div class="wave"></div>
+        <div class="relative z-10 bg-indigo-600 text-white pt-20 pb-10">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">关于我们</h4>
+                        <p class="text-indigo-200">致力于为每个学习者提供最优质的学习体验。</p>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">快速链接</h4>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-indigo-200 hover:text-white">首页</a></li>
+                            <li><a href="#features" class="text-indigo-200 hover:text-white">特性</a></li>
+                            <li><a href="{{ url_for('login') }}" class="text-indigo-200 hover:text-white">登录</a></li>
+                            <li><a href="{{ url_for('register') }}" class="text-indigo-200 hover:text-white">注册</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">联系我们</h4>
+                        <ul class="space-y-2">
+                            <li class="text-indigo-200">邮箱：contact@example.com</li>
+                            <li class="text-indigo-200">电话：123-456-7890</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold mb-4">关注我们</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-indigo-200 hover:text-white text-2xl">
+                                <i class="fab fa-weixin"></i>
+                            </a>
+                            <a href="#" class="text-indigo-200 hover:text-white text-2xl">
+                                <i class="fab fa-weibo"></i>
+                            </a>
+                            <a href="#" class="text-indigo-200 hover:text-white text-2xl">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-indigo-500 pt-8 text-center text-indigo-200">
+                    <p>&copy; 2024 智能学习系统. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
